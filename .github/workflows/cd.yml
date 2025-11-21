@@ -39,3 +39,18 @@ jobs:
           echo "Deploying application... in $environment environment"
           # TODO: replace the following line with your real deploy command
           # ./scripts/deploy.sh "$environment"
+      - name: Tagging Accordingly
+        if: ${{ env.environment != '' }}
+        run: |
+          echo "Tagging the deployment accordingly..."
+          if [ "$environment" == "qa" ]; then
+            NEW_TAG="prod-$(date +'%Y.%m.%d.%H%M%S')"
+          elif [ "$environment" == "dev" ]; then
+            NEW_TAG="qa-$(date +'%Y.%m.%d.%H%M%S')"
+          elif [ "$environment" == "qa" ]; then
+            NEW_TAG="uat-$(date +'%Y.%m.%d.%H%M%S')"
+          fi
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag $NEW_TAG
+          git push origin $NEW_TAG
