@@ -5,6 +5,11 @@ on:
     workflows: ["CI","CD"]
     types:
       - completed
+  push:
+    tags:
+      - 'prod-*'
+      - 'qa-*'
+      - 'uat-*'
 
 jobs:
   deploy:
