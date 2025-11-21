@@ -37,7 +37,6 @@ jobs:
     needs: [define_version]
     uses: ./.github/workflows/ci.yml
     with:
-      version: ${{ needs.define_version.outputs.version }}
       image_tag: ${{ needs.define_version.outputs.image_tag }}
     
   deploy-dev:
