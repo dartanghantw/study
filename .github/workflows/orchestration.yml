@@ -37,23 +37,23 @@ jobs:
       image_tag: ${{ needs.define_version.outputs.image_tag }}
     
   deploy-dev:
-    needs: ci
+    needs: [define_version,ci]
     if: github.event.inputs.skip_dev != 'true'
     uses: ./.github/workflows/cd.yml
     with:
       environment: dev
-      version: ${{ needs.build.outputs.version }}
-      image_tag: ${{ needs.build.outputs.image_tag }}
+      version: ${{ needs.define_version.outputs.version }}
+      image_tag: ${{ needs.define_version.outputs.image_tag }}
     secrets: inherit          
 
   deploy-qa:
-    needs: [ci, deploy-dev]
+    needs: [define_version,ci, deploy-dev]
     if: |
       always() && 
       (needs.deploy-dev.result == 'success' || github.event.inputs.skip_dev == 'true')
     uses: ./.github/workflows/cd.yml
     with:
       environment: qa
-      version: ${{ needs.build.outputs.version }}
-      image_tag: ${{ needs.build.outputs.image_tag }}
+      version: ${{ needs.define_version.outputs.version }}
+      image_tag: ${{ needs.define_version.outputs.image_tag }}
     secrets: inherit
