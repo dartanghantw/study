@@ -1,0 +1,41 @@
+# Only runs when CI or the previous CD succeeds on main branch or on prod tags
+# reusable for all environments
+on:
+  workflow_run:
+    workflows: ["CI","CD"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Determine environment
+        id: determine_env
+        run: |
+          echo "Determining deployment environment..."
+          git fetch --tags --prune
+          ENVIRONMENT_READY=$(git tag --points-at HEAD | grep -e "^\(prod\|qa\|uat\|demo\)\-[0-9\.]*$" )
+          if [ -n "$ENVIRONMENT_READY" ]; then
+            if echo "$ENVIRONMENT_READY" | grep -q "^prod-"; then
+              echo "environment=prod" >> $GITHUB_ENV
+            elif echo "$ENVIRONMENT_READY" | grep -q "^qa-"; then
+              echo "environment=qa" >> $GITHUB_ENV
+            elif echo "$ENVIRONMENT_READY" | grep -q "^uat-"; then
+              echo "environment=uat" >> $GITHUB_ENV
+            elif echo "$ENVIRONMENT_READY" | grep -q "^demo-"; then
+              echo "environment=demo" >> $GITHUB_ENV
+            fi
+          else
+            echo "environment=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy Application
+        run: |
+          echo "Deploying application... in $environment environment"
+          # TODO: replace the following line with your real deploy command
+          # ./scripts/deploy.sh "$environment"
