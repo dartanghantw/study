@@ -34,7 +34,7 @@ jobs:
       image_tag: ${{ steps.version.outputs.image_tag }}
 
   ci:
-    needs: define_version
+    needs: [define_version]
     uses: ./.github/workflows/ci.yml
     with:
       version: ${{ needs.define_version.outputs.version }}
