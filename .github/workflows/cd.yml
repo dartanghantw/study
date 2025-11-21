@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "Determining deployment environment..."
           git fetch --tags --prune
-          ENVIRONMENT_READY=$(git tag --points-at HEAD | grep -e "^\(prod\|qa\|uat\|demo\)\-[0-9\.]*$" )
+          ENVIRONMENT_READY=$(git tag --points-at HEAD | grep -e "^\(prod\|qa\|uat\|demo\)\-[0-9\.]*$" || true )
           if [ -n "$ENVIRONMENT_READY" ]; then
             if echo "$ENVIRONMENT_READY" | grep -q "^prod-"; then
               echo "environment=prod" >> $GITHUB_ENV
