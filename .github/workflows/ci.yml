@@ -1,17 +1,27 @@
 name: CI
 on:
-  workflow_dispatch:
-  workflow_run:
   workflow_call:
-    
-
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: 'Environment to deploy to (dev, qa, prod)'
+      version:
+        required: true
+        type: string
+        description: 'Version/SHA to deploy'
+      image_tag:
+        required: true
+        type: string
+        description: 'Docker image tag to deploy'
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.image_tag }}
       # check if this commit doenst have a tag
       - name: Checking
         run: echo "Doing some CI tasks..."
