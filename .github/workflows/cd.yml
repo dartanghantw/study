@@ -50,7 +50,7 @@ jobs:
           elif [ "$environment" == "qa" ]; then
             NEW_TAG="uat-$(date +'%Y.%m.%d.%H%M%S')"
           fi
-          git config --global user.name "github-actions[bot]"
+          git config --global user.name "dartanghantw"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git tag $NEW_TAG
           git push origin $NEW_TAG
