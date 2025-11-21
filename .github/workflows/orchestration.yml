@@ -1,0 +1,53 @@
+name: Deployment Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        type: choice
+        description: 'Deploy to environment'
+        options:
+          - dev
+          - qa
+          - prod
+      skip_dev:
+        type: boolean
+        description: 'Skip DEV deployment'
+        default: false
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/CD.yml
+      - name: Build Application
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+          SHORT_SHA=$(git rev-parse --short=8 HEAD)
+          IMAGE_TAG="${SHORT_SHA}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+    
+  deploy-dev:
+    needs: ci
+    if: github.event.inputs.skip_dev != 'true'
+    uses: ./.github/workflows/CD.yml
+    with:
+      environment: dev
+      version: ${{ needs.build.outputs.version }}
+      image_tag: ${{ needs.build.outputs.image_tag }}
+    secrets: inherit          
+
+  deploy-qa:
+    needs: [build, deploy-dev]
+    if: |
+      always() && 
+      (needs.deploy-dev.result == 'success' || github.event.inputs.skip_dev == 'true')
+    uses: ./.github/workflows/CD.yml
+    with:
+      environment: qa
+      version: ${{ needs.build.outputs.version }}
+      image_tag: ${{ needs.build.outputs.image_tag }}
+    secrets: inherit

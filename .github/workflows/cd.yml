@@ -1,15 +1,20 @@
 # Only runs when CI or the previous CD succeeds on main branch or on prod tags
 # reusable for all environments
 on:
-  workflow_run:
-    workflows: ["CI","CD"]
-    types:
-      - completed
-  push:
-    tags:
-      - 'prod-*'
-      - 'qa-*'
-      - 'uat-*'
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: 'Environment to deploy to (dev, qa, prod)'
+      version:
+        required: true
+        type: string
+        description: 'Version/SHA to deploy'
+      image_tag:
+        required: true
+        type: string
+        description: 'Docker image tag to deploy'
 
 jobs:
   deploy:
@@ -18,42 +23,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Determine environment
-        id: determine_env
-        run: |
-          echo "Determining deployment environment..."
-          git fetch --tags --prune
-          ENVIRONMENT_READY=$(git tag --points-at HEAD | grep -e "^\(prod\|qa\|uat\|demo\)\-[0-9\.]*$" || true )
-          if [ -n "$ENVIRONMENT_READY" ]; then
-            if echo "$ENVIRONMENT_READY" | grep -q "^prod-"; then
-              echo "environment=prod" >> $GITHUB_ENV
-            elif echo "$ENVIRONMENT_READY" | grep -q "^qa-"; then
-              echo "environment=qa" >> $GITHUB_ENV
-            elif echo "$ENVIRONMENT_READY" | grep -q "^uat-"; then
-              echo "environment=uat" >> $GITHUB_ENV
-            elif echo "$ENVIRONMENT_READY" | grep -q "^demo-"; then
-              echo "environment=demo" >> $GITHUB_ENV
-            fi
-          else
-            echo "environment=dev" >> $GITHUB_ENV
-          fi
-
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.image_tag }}
       - name: Deploy Application
         run: |
-          echo "Deploying application... in $environment environment"
-          # TODO: replace the following line with your real deploy command
-          # ./scripts/deploy.sh "$environment"
-      - name: Tagging Accordingly
-        if: ${{ env.environment != '' }}
-        run: |
-          echo "Tagging the deployment accordingly..."
-          if [ "$environment" == "qa" ]; then
-            NEW_TAG="prod-$(date +'%Y.%m.%d.%H%M%S')"
-          elif [ "$environment" == "dev" ]; then
-            NEW_TAG="qa-$(date +'%Y.%m.%d.%H%M%S')"
-          elif [ "$environment" == "qa" ]; then
-            NEW_TAG="uat-$(date +'%Y.%m.%d.%H%M%S')"
-          fi
-          git tag $NEW_TAG
-          git push --tags
+          echo "Deploying to environment: ${{ inputs.environment }}"
+          echo "Using image tag: ${{ inputs.image_tag }}"
