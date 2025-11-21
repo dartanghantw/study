@@ -7,10 +7,6 @@ on:
         required: true
         type: string
         description: 'Environment to deploy to (dev, qa, prod)'
-      version:
-        required: true
-        type: string
-        description: 'Version/SHA to deploy'
       image_tag:
         required: true
         type: string
