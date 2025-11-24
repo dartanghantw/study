@@ -13,8 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.image_tag }}
+
       # check if this commit doenst have a tag
       - name: Checking
         run: echo "Doing some CI tasks..."
