@@ -58,8 +58,26 @@ jobs:
       commit_sha: ${{ needs.define_version.outputs.commit_sha }}
     secrets: inherit
 
-  deploy-prod:
+  release-tag:
     needs: [deploy-qa]
+    if: (needs.deploy-qa.result == 'success' && github.event.inputs.target_environment == 'prod') || (github.event.inputs.skip_dev == 'true' && needs.deploy-qa.result == 'success' && github.event.inputs.target_environment == 'prod')
+    runs-on: ubuntu-latest
+    outputs:
+      commit_sha: ${{ steps.create_tag.outputs.commit_sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Create Release Tag
+        id: create_tag
+        run: |
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          IMAGE_TAG="${COMMIT_SHA}"
+          git tag "release-${IMAGE_TAG}"
+          git push origin "release-${IMAGE_TAG}"
+          echo "commit_sha=release-${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+  deploy-prod:
+    needs: [release-tag]
     uses: ./.github/workflows/cd.yml
     with:
       environment: prod
