@@ -45,9 +45,8 @@ jobs:
     secrets: inherit          
 
   deploy-qa:
-    needs: [ ci, deploy-dev ]
+    needs: [ ci ]
     if: |
-      always() &&
       (needs.deploy-dev.result == 'success' || github.event.inputs.skip_dev == 'true')
     uses: ./.github/workflows/cd.yml
     with:
