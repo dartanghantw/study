@@ -57,7 +57,7 @@ jobs:
 
   release-tag:
     needs: [deploy-qa]
-    if: (needs.deploy-qa.result == 'success')
+    if: always() && (needs.deploy-qa.result == 'success')
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.create_tag.outputs.release_tag }}
@@ -75,7 +75,7 @@ jobs:
 
   deploy-prod:
     needs: [release-tag]
-    if: needs.release-tag.result == 'success'
+    if: always() && (needs.release-tag.result == 'success')
     uses: ./.github/workflows/cd.yml
     with:
       environment: prod
