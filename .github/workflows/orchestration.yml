@@ -60,7 +60,8 @@ jobs:
 
   release-tag:
     needs: [deploy-qa]
-    if: (needs.deploy-qa.result == 'success' && github.event.inputs.target_environment == 'prod') || (github.event.inputs.skip_dev == 'true' && needs.deploy-qa.result == 'success' && github.event.inputs.target_environment == 'prod')
+    if: (needs.deploy-qa.result == 'success' && ( github.event.inputs.target_environment == 'qa' || github.event.inputs.target_environment == 'prod')
+     # Create a release tag based on the commit SHA
     runs-on: ubuntu-latest
     outputs:
       commit_sha: ${{ steps.create_tag.outputs.commit_sha }}
