@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Warmup
+        run: echo "Starting deployment to ${{ inputs.environment }} with image tag ${{ inputs.image_tag }}"
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
