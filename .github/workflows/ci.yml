@@ -16,4 +16,4 @@ jobs:
 
       # check if this commit doenst have a tag
       - name: Checking
-        run: echo "Doing some CI tasks..."
+        run: echo "Doing some CI tasks... ${{ inputs.image_tag }}"
