@@ -12,6 +12,7 @@ on:
 
 jobs:
   deploy:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     if: >
       (inputs.environment == 'prod' && startsWith(inputs.commit_sha, 'release-')) ||
