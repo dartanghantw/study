@@ -24,7 +24,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          rev: ${{ inputs.commit_sha }}
+          ref: ${{ inputs.commit_sha }}
       - name: Deploy Application
         run: |
           echo "Deploying to environment: ${{ inputs.environment }}"
