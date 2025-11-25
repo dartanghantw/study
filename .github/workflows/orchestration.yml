@@ -70,6 +70,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Create Release Tag
+        id: create_tag
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
           IMAGE_TAG="${SHORT_SHA}"
