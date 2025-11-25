@@ -40,10 +40,11 @@ jobs:
     
   deploy-dev:
     needs: [define_version,ci]
+    if: ${{ github.event.inputs.skip_dev != 'true' }}
     uses: ./.github/workflows/cd.yml
     with:
       environment: dev
-      image_tag: ${{ needs.define_version.outputs.image_tag }}
+      image_tag: main
     secrets: inherit          
 
   deploy-qa:
