@@ -5,13 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      target_environment:
-        type: choice
-        description: 'Deploy to environment'
-        options:
-          - dev
-          - qa
-          - prod
       skip_dev:
         type: boolean
         description: 'Skip DEV deployment'
@@ -60,7 +53,7 @@ jobs:
 
   release-tag:
     needs: [deploy-qa]
-    if: (needs.deploy-qa.result == 'success' && ( github.event.inputs.target_environment == 'qa' || github.event.inputs.target_environment == 'prod')
+    if: (needs.deploy-qa.result == 'success')
      # Create a release tag based on the commit SHA
     runs-on: ubuntu-latest
     outputs:
