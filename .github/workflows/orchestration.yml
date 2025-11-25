@@ -57,6 +57,7 @@ jobs:
 
   release-tag:
     needs: [deploy-qa]
+    if: always()
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.create_tag.outputs.release_tag }}
