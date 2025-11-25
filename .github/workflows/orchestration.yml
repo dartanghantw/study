@@ -47,7 +47,7 @@ jobs:
       (needs.deploy-dev.result == 'success' || github.event.inputs.skip_dev == 'true')
     uses: ./.github/workflows/cd.yml
     with:
-      environment: qa
+      environment: prod
       commit_sha: ${{ needs.define_version.outputs.commit_sha }}
     secrets: inherit
 
