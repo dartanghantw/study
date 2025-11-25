@@ -48,7 +48,7 @@ jobs:
     needs: [ ci, deploy-dev ]
     if: |
       always() &&
-      (needs.deploy-dev.result == 'success' || github.event.inputs.skip_dev == 'true')
+      (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped')
     uses: ./.github/workflows/cd.yml
     with:
       environment: qa
@@ -57,7 +57,7 @@ jobs:
 
   release-tag:
     needs: [deploy-qa]
-    if: always()
+    if: always() && (needs.deploy-qa.result == 'success' )
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.create_tag.outputs.release_tag }}
