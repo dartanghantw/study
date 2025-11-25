@@ -1,3 +1,4 @@
+name: Deployment Pipeline
 on:
   workflow_call:
     inputs:
