@@ -59,11 +59,13 @@ jobs:
     secrets: inherit
 
   release-tag:
-    needs: [define_version,ci, deploy-qa]
+    needs: [deploy-qa]
     if: |
       always() && 
       (needs.deploy-qa.result == 'success' || github.event.inputs.skip_dev == 'true')
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.create_tag.outputs.image_tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,4 +75,12 @@ jobs:
           IMAGE_TAG="${SHORT_SHA}"
           git tag "release-${IMAGE_TAG}"
           git push origin "release-${IMAGE_TAG}"
-      
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+  
+  deploy-prod:
+    needs: [release-tag]
+    uses: ./.github/workflows/cd.yml
+    with:
+      environment: prod
+      image_tag: ${{ needs.release-tag.outputs.image_tag }}
+    secrets: inherit
