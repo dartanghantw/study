@@ -57,3 +57,23 @@ jobs:
       environment: qa
       image_tag: ${{ needs.define_version.outputs.image_tag }}
     secrets: inherit
+
+  release-tag:
+    needs: [define_version,ci, deploy-qa]
+    if: |
+      always() && 
+      (needs.deploy-qa.result == 'success' || github.event.inputs.skip_dev == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Create Release Tag
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          IMAGE_TAG="${SHORT_SHA}"
+          git tag "release-${IMAGE_TAG}"
+      - name: Commit Updated Version
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "chore(release): release-${IMAGE_TAG}"
+          tagging_message: "release-${IMAGE_TAG}"
