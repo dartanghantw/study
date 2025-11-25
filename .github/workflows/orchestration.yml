@@ -45,7 +45,6 @@ jobs:
     with:
       environment: dev
       image_tag: ${{ needs.define_version.outputs.image_tag }}
-    secrets: inherit          
 
   deploy-qa:
     needs: [define_version,ci, deploy-dev]
