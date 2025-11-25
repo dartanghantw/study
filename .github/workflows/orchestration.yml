@@ -25,8 +25,7 @@ jobs:
         id: version
         run: |
           COMMIT_SHA=$(git rev-parse HEAD)
-          IMAGE_TAG="${COMMIT_SHA}"
-          echo "commit_sha=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
     outputs:
       commit_sha: ${{ steps.version.outputs.commit_sha }}
 
@@ -48,7 +47,6 @@ jobs:
   deploy-qa:
     needs: [define_version,ci, deploy-dev]
     if: |
-      always() && 
       (needs.deploy-dev.result == 'success' || github.event.inputs.skip_dev == 'true')
     uses: ./.github/workflows/cd.yml
     with:
@@ -62,7 +60,7 @@ jobs:
      # Create a release tag based on the commit SHA
     runs-on: ubuntu-latest
     outputs:
-      commit_sha: ${{ steps.create_tag.outputs.commit_sha }}
+      release_tag: ${{ steps.create_tag.outputs.release_tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,7 +71,7 @@ jobs:
           IMAGE_TAG="${COMMIT_SHA}"
           git tag "release-${IMAGE_TAG}"
           git push origin "release-${IMAGE_TAG}"
-          echo "commit_sha=release-${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "release_tag=release-${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
   deploy-prod:
     needs: [release-tag]
@@ -81,5 +79,5 @@ jobs:
     uses: ./.github/workflows/cd.yml
     with:
       environment: prod
-      commit_sha: ${{ needs.release-tag.outputs.commit_sha }}
+      commit_sha: ${{ needs.release-tag.outputs.release_tag }}
     secrets: inherit
