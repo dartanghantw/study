@@ -30,7 +30,7 @@ jobs:
 
   release-tag:
     needs: [deploy]
-    if: (needs.deploy.result == 'success' && github.event.inputs.target_environment == 'qa' )
+    if: (needs.deploy.result == 'success' && github.event.inputs.environment == 'qa' )
     runs-on: ubuntu-latest
     outputs:
       commit_sha: ${{ steps.create_tag.outputs.commit_sha }}
