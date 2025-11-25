@@ -76,7 +76,7 @@ jobs:
           IMAGE_TAG="${SHORT_SHA}"
           git tag "release-${IMAGE_TAG}"
           git push origin "release-${IMAGE_TAG}"
-          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image_tag=release-${IMAGE_TAG}" >> $GITHUB_OUTPUT
   
   deploy-prod:
     needs: [release-tag]
