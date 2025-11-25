@@ -59,7 +59,7 @@ jobs:
     secrets: inherit
 
   deploy-prod:
-    needs: [release-tag]
+    needs: [deploy-qa]
     uses: ./.github/workflows/cd.yml
     with:
       environment: prod
