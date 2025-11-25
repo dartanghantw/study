@@ -40,7 +40,6 @@ jobs:
     
   deploy-dev:
     needs: [define_version,ci]
-    if: ${{ github.event.inputs.skip_dev != 'true' }}
     uses: ./.github/workflows/cd.yml
     with:
       environment: dev
