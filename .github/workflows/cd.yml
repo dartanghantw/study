@@ -1,12 +1,10 @@
-# Only runs when CI or the previous CD succeeds on main branch or on prod tags
-# reusable for all environments
 on:
   workflow_call:
     inputs:
       environment:
-        required: true
-        type: string
+        type: string        
         description: 'Environment to deploy to (dev, qa, prod)'
+        required: true
       commit_sha:
         required: true
         type: string
@@ -15,7 +13,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    if: >
+      (inputs.environment == 'prod' && startsWith(inputs.commit_sha, 'release-')) ||
+      (inputs.environment != 'prod' && !startsWith(inputs.commit_sha, 'release-'))
     steps:
       - name: Warmup
         run: echo "Starting deployment to ${{ inputs.environment }} with image tag ${{ inputs.commit_sha }}"
@@ -27,4 +27,3 @@ jobs:
         run: |
           echo "Deploying to environment: ${{ inputs.environment }}"
           echo "Using image tag: ${{ inputs.commit_sha }}"
-

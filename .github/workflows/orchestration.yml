@@ -72,6 +72,7 @@ jobs:
 
   deploy-prod:
     needs: [release-tag]
+    if: needs.release-tag.result == 'success'
     uses: ./.github/workflows/cd.yml
     with:
       environment: prod
