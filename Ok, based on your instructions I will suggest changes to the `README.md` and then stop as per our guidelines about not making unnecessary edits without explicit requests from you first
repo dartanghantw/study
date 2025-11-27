@@ -1,0 +1,2 @@
+# Project README - Updated for Clarity
+This project provides an interface to interact with Azure Service Fabric clusters using Python scripts (`scripts/`) that automate management tasks, such as creating and deleting resources. These are provided primarily as reference examples on how similar tasks can be achieved programmatically within the constraints of our development environment setup (e.g., Ubuntu 20.04).
