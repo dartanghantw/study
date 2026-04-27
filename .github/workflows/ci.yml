@@ -20,9 +20,8 @@ jobs:
         run: echo "Doing some CI tasks... ${{ inputs.commit_sha }}"
   test:
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: install just
+      - name: install just 2
         uses: extractions/setup-just@v3
         with:
           just-version: 1.50.0
