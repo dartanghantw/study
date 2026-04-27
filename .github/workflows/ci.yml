@@ -23,4 +23,6 @@ jobs:
     needs: build
     steps:
       - name: install just
-        uses: extractions/setup-just@v4
+        uses: extractions/setup-just@v5
+        with:
+          just-version: 1.50.0
