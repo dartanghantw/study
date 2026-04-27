@@ -23,4 +23,4 @@ jobs:
     needs: build
     steps:
       - name: install just
-        uses: extractions/setup-just@v3
+        uses: extractions/setup-just@v4
