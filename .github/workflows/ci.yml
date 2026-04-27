@@ -24,4 +24,4 @@ jobs:
       - name: install just 2
         uses: extractions/setup-just@v3
         with:
-          just-version: 1.50.0
+          just-version: 1.49.0
