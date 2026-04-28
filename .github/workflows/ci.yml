@@ -23,3 +23,11 @@ jobs:
     steps:
       - name: install just 2
         uses: extractions/setup-just@v3
+      - name: Databricks validation
+        uses: actions/ai-inference@v1
+        with:
+          model: openai/gpt-5-mini
+          system-prompt-file: .github/agents/databricks-knowledge.agent.md
+          prompt: "Scan the project's databricks content and validate"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
