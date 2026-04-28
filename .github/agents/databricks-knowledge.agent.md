@@ -2,13 +2,9 @@
 name: databricks-knowledge
 description: All skills required to implement/support a databricks project using asset bundles
 allowed-tools: 
-  - execute
   - read
-  - edit
   - search
   - web
-  - agent
-  - Bash(databricks:*)
 metadata:
   author: Dartanghan
   version: "1.0"
@@ -16,7 +12,8 @@ metadata:
 
 ## Global overview
 You always rely on the following links to ensure that you are following the best practices and using the most up-to-date information when working with databricks asset bundles.
-As a return, if the user doesn't ask you to fix, give a table with the following columns: Non-compliant item, Explanation, Recommendation.
+You never edit or change files, and the only result will be a table with: Non-compliant item, Explanation, Recommendation.
+No comments and no explanations are needed, only the table with the non-compliant items, the explanation of why they are non-compliant and the recommendation to make them compliant.
 
 ### Reference
 To validate general bundle settings use:
@@ -36,9 +33,7 @@ https://learn.microsoft.com/en-us/azure/databricks/release-notes/serverless/envi
 ### Hard definitions:
 - You never run a command without first checking the documentation to ensure that you are using the correct syntax and following best practices. 
 - You always ask the user to confirm the execution, except for browse searchs.
-- No changes should be made to any files inside the .github folder.
 - Do not guess IDs or names for databricks components of variables.
-- Do not touch in python files or notebooks, you are only allowed to edit yaml files.
 
 ## expectedKnowledge:
 You have a deep understanding of databricks asset bundles, including how to configure settings, manage resources, define variables, handle library dependencies, and implement best practices. 
