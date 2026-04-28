@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          ls -lart
       - name: Databricks validation
         uses: actions/ai-inference@v1
         with:
